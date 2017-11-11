@@ -1,0 +1,231 @@
+--------
+LastZero
+--------
+1 - Fallo : Buscamos el ultimo cero del array, en el programa falla cuando tenemos varios ceros introducidos, ya que cuando encuentra el primer cero el programa retorna no lee todo el array.
+2- // this test OK!
+   @Test public void NomultipleZeroes() 
+   {
+      int arr[] = {1, 1, 0};
+      assertEquals("Multiple zeroes: should find last one", 2, LastZero.lastZero(arr));
+   }
+
+3- java LastZero 1 1 0 - Ejecuta el fallo pero no provoca el error en el estado ya que es el ultimo cero que se añade al array.
+
+4- Puede existir un caso en el que se provoque el error y no se vea la disfunción del código, unnicamente cuando introducimos un unico cero en el array. Veremos la difunción siempre que metamos varios ceros ya que se quedará con la posición del primer cero que se encuentre.
+
+5- for (int i = 0; i < x.length; i++) -- Buscamos en todas las posiciones del array, empezando por la posicion 0
+      {
+         if (x[i] == 0) -- Si en la posicion de i tenemos un cero retornamos por tanto si metemos {0 0 1} en la primera posicion x[0] encuentra el cero y retorna
+         {
+            return i; -- Aqui tenemos el error -- retorna 0 y no continua mirando el array;
+         }
+      }
+      return -1; -- Solo en el caso de no encontrar ningun 0 retorna -1
+
+6- Código corregido
+	int a = -1 ; -- si no encuentra un cero retornara -1
+	for (int i = 0; i < x.length; i++) -- Busca en todas las posiciones del array
+	{
+		if (x[i] == 0){ -- Si encuentra un cero en alguna posicion se queda con su indice y continua hasta llegar al final del array 
+			a = i;
+		}
+ 
+	}
+	return a; -- Retorna el valor que tenga "a"
+
+Lo testeamos : 
+java -cp .:../junit-4.12.jar:../hamcrest-core-1.3.jar AllTests
+..
+Time: 0.016
+
+OK (2 tests)
+
+-------------
+CountPositive
+-------------
+1- El fallo en el código es cuando espera valores positivos ya que el cero es tomado como un valor positivo. Por tanto tiene tantos valores positivos de mass ocmo ceros haya en el array
+
+
+2- No existe un caso que no ejecute el codigo a no ser que no introduzcamos un array, ya que el fallo se encuentra en el procedimiento de contar los valores positivos CountPositive
+
+3- // this test OK!
+   @Test public void arrayNoContainsZeroes() 
+   {
+      int arr[] = {-4 ,-2 ,2 ,1};
+      assertEquals("Array contains zeroes", 2, CountPositive.countPositive(arr));
+   }
+
+4- No es posible ya que si tenemos un valor que sea 0 será contado como positivo y por lo tanto obtendremos a la salida del procedimiento un valor que no es el deseado -- Failure -- 
+
+5- Tenemos como prueba  // test:  x=[-4, 2, 0, 2]             
+      			//        Expected = 2  
+public static int countPositive (int[] x)
+   {
+      int count = 0; -- El contador empieza en cero y se incrementa cuando encuentre un valor que sea positivo
+    
+      for (int i=0; i < x.length; i++) -- Busca en todo el array 
+      {
+         if (x[i] >= 0) -- Cuando el array en el indice es cero o mayor que cero incrementa el contador -- por tanto el contador tendra en cada vuelta 0 ,1 ,2, 3 respectivamente -- countTotal = 3
+         {
+            count++;
+		-- i = 0 --Count = 0
+		-- i = 1 --Count = 1
+		-- i = 2 --Count = 2		
+		-- i = 3 --Count = 3
+
+         }
+      }
+      return count;
+   }
+
+
+6-  Código corregido:
+ public static int countPositive (int[] x){
+      int count = 0;
+      for (int i=0; i < x.length; i++)
+      {
+         if (x[i] > 0) -- Solamente cuando encuetre valores mayores que cero (positivos) se incrementa el contador
+         {
+            count++;
+         }
+      }
+      return count;
+}
+
+Lo testeamos :
+
+java -cp .:../junit-4.12.jar:../hamcrest-core-1.3.jar AllTests
+..
+Time: 0.017
+
+OK (2 tests)
+
+---------
+OddOrPos
+--------
+
+1- Tenemos un fallo en procedimiento OddOrPos en el cual al entrar al bucle compara si el resto de la division entre el valor del array y 2 es 1, esto no ocurre cuando el numero es impar, por tanto eso nos implica un fallo, no tendremos valores impares segun esa comparacion.
+
+2- No existe un caso que no ejecute el codigo a no ser que no introduzcamos un array, ya que el fallo se encuentra en el procedimiento de contar numeros impares o positivos y este procedimiento siempre es llamado.
+
+3- // this test Ok!
+   @Test public void positiveOddNumbers() 
+   {
+      int arr[] = {3, 2, 0, 1, 4};
+      assertEquals("Positive odd numbers in array", 4, OddOrPos.oddOrPos(arr));
+   }
+   Introducimos valores pares e impares pero todos van a ser contados como valores positivos por tanto va a funcionar de forma esperada.
+
+4- No es posible ya que si introducimos un valor positivo que sea impar funciona ya que cumple la condicion de que es positivo y cuando introducimos un valor negativo e impar no realizara su funcion ya que el resto de un numero impar no es 1.
+
+5-    public static int oddOrPos (int[] x)
+   {  // Effects:  if x is null throw NullPointerException
+      // else return the number of elements in x that
+      //      are either odd or positive (or both)
+            
+      int count = 0; -- El contador lo tenemos inicalizado a 0 y solo sumamos en el caso que sea favorable que el valor sea impar/pos
+   
+      for (int i = 0; i < x.length; i++) -- desde el 0 hasta el tamaño del array vamos incrementando
+      {
+         if (x[i]%2 == 1 || x[i] > 0) -- en este punto se encuentra el fallo : 
+					 tenemos nuestro caso de prueba por tanto:
+					 -- i = 0 ; x[i]=-3 ; x[i]%2 == 1 : False -- este valor es impar por tanto tendria que ser True y 						el contador incrementarse
+         {
+            count++;
+         }
+      }
+      return count;
+   }
+      // test:  x=[-3, -2, 0, 1, 4]           
+      //        Expected = 3
+
+6-  int count = 0;
+   
+      for (int i = 0; i < x.length; i++)
+      {
+         if (x[i]%2 != 0 || x[i] > 0) -- en este punto lo que queremos es que sea distinto de cero en el caso de que sea impar ya que sabemos que el resto de la division de un valor par es 0.
+         {
+            count++;
+         }
+      }
+      return count;
+   }
+ 
+Lo testeamos :
+
+java -cp .:../junit-4.12.jar:../hamcrest-core-1.3.jar AllTests
+..
+Time: 0.018
+
+OK (2 tests)
+  
+--------
+FindLast
+--------
+
+1- En el codigo tenemos el fallo en el FindLast ya que en el bucle no llega a la ultima posicion del array por tanto si buscamos en esa posicion no obtendremos el valor deseado y tendremos un Failure.
+
+2- En todos los casos tenemos que ejecutar el fallo ya que se llama a ese procedimiento y siempre entra en el bucle a no ser que no tengamos valores en el array o no introduzcamos un valor de busqueda.
+
+3- @Test public void lastOccurrenceInLastElement() 
+   {
+      int arr[] = {3, 3, 2};
+      int y = 2;
+      assertEquals("Last occurence in last element", 2, FindLast.findLast(arr, y));
+   }
+   @Test public void lastOccurrenceInMiddle() 
+   {
+      int arr[] = {3, 2, 3};
+      int y = 2;
+      assertEquals("Last occurence in midle element", 1, FindLast.findLast(arr, y));
+   }
+
+
+4- Siempre que metamos el valor buscado en la primera posicion que es donde se encuentra el error tendremos la disfuncion.
+	
+5- Tenemos como prueba x= {2 3 3} y = 2
+public static int findLast (int[] x, int y)
+   { 
+      // As the example in the book points out, this loop should end at 0.
+      for (int i=x.length-1; i > 0; i--) // No toma la primera posicion ya que no incluye el index 0
+					 -- i = 2 ; x[i] = 3 -- no entramos en el if
+					 -- i = 1 ; x[i] = 3 -- no entramos en el if
+				   	 -- i = 0 ; no es mayor que cero, no cumple la condicion del bucle por tanto no compara.
+      {
+         if (x[i] == y) 
+         {
+            return i;   
+         }
+      }
+      return -1;
+   }
+
+6- public static int findLast (int[] x, int y)
+   { 
+      // As the example in the book points out, this loop should end at 0.
+      for (int i=x.length-1; i >= 0; i--) // toma la primera posicion ya que ahora incluye el index 0
+      {
+
+         if (x[i] == y)  
+         {
+            return i; -- retorna el valor de la posicion en cualquier instante
+         }
+      }
+      return -1;
+   }
+
+Lo testeamos:
+java -cp .:../junit-4.12.jar:../hamcrest-core-1.3.jar AllTests 
+.2
+1
+.2
+.2
+1
+0
+
+Time: 0.018
+
+OK (3 tests)
+
+
+
